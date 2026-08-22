@@ -1,5 +1,9 @@
 # 🤖 ربات فضول‌یاب — نسخه Railway
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/YOUR-TEMPLATE-SLUG?referralCode=uTN7AS&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
+> دکمه بالا بعد از ساخت قالب در Railway فعال می‌شود (بخش «ساخت دکمه دیپلوی» پایین).
+
 ربات بله با سیستم لینک فضول‌یابی، XP، سطح، ماموریت و اشتراک VIP — آماده استقرار روی Railway.
 
 ## ✨ امکانات
@@ -74,4 +78,24 @@ python main.py
 | `tasks.py` | تعریف ۲۰۰ ماموریت XP |
 | `config.py` | تنظیمات — از متغیرهای محیطی می‌خواند |
 | `Dockerfile` | بیلد قطعی روی python:3.12-slim |
-| `railway.toml` | تنظیمات Railway (healthcheck، volume الزامی، ری‌استارت) |
+| `railway.toml` | تنظیمات Railway (healthcheck، volume الزامی `/data`، ری‌استارت) |
+
+## 🔘 ساخت دکمه دیپلوی (Deploy Button)
+
+دکمه دیپلوی ریلوی به یک «قالب» (Template) وصل می‌شود که متغیرها را **قبل از دیپلوی** از کاربر می‌گیرد. یک‌بار این مراحل را انجام دهید:
+
+1. وارد [railway.com](https://railway.com) شوید → صفحه Workspace → تب **Templates** → **New Template**
+2. **Add a service → GitHub Repo** → ریپو `bale-snoop-bot` را انتخاب کنید
+3. در همان سرویس: تب **Variables** → این متغیرها را به عنوان **Required** اضافه کنید:
+   - `BOT_TOKEN` — توکن ربات از BotFather بله
+   - `ADMIN_ID` — شناسه عددی ادمین
+   - `PROVIDER_TOKEN` *(اختیاری)* — توکن درگاه پرداخت
+4. Volume را در قالب هم اضافه کنید: Settings سرویس → Volumes → mount path `/data`
+5. **Create Template** → آدرس قالب را کپی کنید
+6. لینک داخل badge بالا (بخش اول README) را با slug قالب خودتان عوض کنید:
+
+```markdown
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/SLUG-TEMPLATE-SHOMA?referralCode=uTN7AS&utm_medium=integration&utm_source=template&utm_campaign=generic)
+```
+
+از این به بعد هر کسی دکمه را بزند، فرم متغیرها را پر می‌کند و ریلوی خودش Volume را وصل کرده و deploy می‌کند — بدون هیچ تنظیم دستی بعد از دیپلوی.
