@@ -1,0 +1,16 @@
+# دیتابیس محلی — هرگز به گیت‌هاب پوش نشود
+*.db
+bot_data.db
+bot_data.db-journal
+bot_data.db-wal
+bot_data.db-shm
+
+# داده‌های محلی
+data/
+logs/
+*.log
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/

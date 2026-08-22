@@ -1,0 +1,17 @@
+# تنظیمات استقرار روی Railway
+# - بیلد با Dockerfile (قطعی و قابل تکرار)
+# - ری‌استارت خودکار در صورت کرش
+# - Volume الزامی روی /data برای حفظ دیتابیس کاربران (bot_data.db)
+
+[build]
+builder = "dockerfile"
+
+[deploy]
+restartPolicyType = "always"
+restartPolicyMaxRetries = 10
+requiredMountPath = "/data"
+healthcheckPath = "/healthz"
+healthcheckTimeout = 120
+
+[variables]
+DB_PATH = "/data/bot_data.db"
