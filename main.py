@@ -1304,6 +1304,41 @@ class Database:
                 'last_broadcast': last_broadcast,
             }
 
+# ====== دانلود خودکار دیتابیس از لینک (فقط بار اول) ======
+# اگر DB_SEED_URL ست شده باشد و فایل دیتابیس هنوز وجود نداشته باشد (یا خالی باشد)،
+# ربات دیتابیس موجود شما را از آن لینک دانلود می‌کند تا کاربران قبلی از دست نروند.
+# روی Railway فقط متغیر DB_SEED_URL را با لینک مستقیم فایل bot_data.db پر کنید.
+def _seed_db_from_url():
+    seed_url = os.environ.get("DB_SEED_URL", "").strip()
+    if not seed_url:
+        return
+    if DB_PATH.exists() and DB_PATH.stat().st_size > 0:
+        print(f"📦 دیتابیس موجود است، دانلود seed رد شد: {DB_PATH}")
+        return
+    tmp_path = DB_PATH.with_suffix(".db.downloading")
+    try:
+        print(f"⬇️ دانلود دیتابیس اولیه از DB_SEED_URL ...")
+        with requests.get(seed_url, stream=True, timeout=120) as r:
+            r.raise_for_status()
+            with open(tmp_path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1 << 16):
+                    f.write(chunk)
+        # چک ساده اینکه فایل واقعا SQLite است
+        with open(tmp_path, "rb") as f:
+            magic = f.read(16)
+        if not magic.startswith(b"SQLite format 3"):
+            raise ValueError("فایل دانلودشده یک دیتابیس SQLite معتبر نیست")
+        tmp_path.replace(DB_PATH)
+        print(f"✅ دیتابیس اولیه دانلود و در {DB_PATH} قرار گرفت.")
+    except Exception as e:
+        print(f"⚠️ دانلود seed ناموفق بود (ربات بدون دیتای قبلی ادامه می‌دهد): {e}")
+        try:
+            tmp_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+_seed_db_from_url()
+
 db = Database(str(DB_PATH))
 
 # ====== بارگذاری قیمت‌های VIP از دیتابیس (اگر ادمین قبلاً تغییر داده) ======
